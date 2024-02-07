@@ -116,7 +116,8 @@ const gameControl = (function() {
     }
 
     // change Active Player method
-    const changeActivePlayer = () => {
+    const changeActivePlayer = (activePlayer) => {
+        
         return activePlayer = activePlayer.name === playerOne.name ? playerTwo : playerOne;
     }
         
@@ -126,7 +127,7 @@ const gameControl = (function() {
     alert("Currently testing conditions" )
 
     board = Gameboard.getBoard();
-    const testboard = [['O', 'X', 'X'], ['O', 'X', 'X'], ['X', 'O', 'O']];
+    const testboard = [['O', 'X', 'X'], ['X', 'O', 0], [0, 'X', 0]];
 
     for (let i = 0; i < 3; i++) {
         let testX = 0;
@@ -145,11 +146,10 @@ const gameControl = (function() {
             console.log('testX: ' + testX +', testO:' + testO)
 
              if (testX === 3) {
-                alert("WINNER! WINNER! TOFU DINNER! XXX")
-                return 'WinnerX'
+                return 'X'
                 } else if (testO === 3) {
                     alert("WINNER! WINNER! TOFU DINNER! OOO")
-                    return 'WinnerO'
+                    return 'O'
                 }
 
             }
@@ -174,35 +174,28 @@ const gameControl = (function() {
             console.log('testX: ' + testX +', testO:' + testO)
 
              if (testX === 3) {
-                alert("WINNER! WINNER! TOFU DINNER! XXX")
-                return 'WinnerX'
+                return 'X'
                 } else if (testO === 3) {
-                    alert("WINNER! WINNER! TOFU DINNER! OOO")
-                    return 'WinnerO'
+                    return 'O'
                 }}
         }
+
 
     // Check for win - diagonals
 
 
-    // if (((testboard[0][0] === 'X') && (testboard[1][1] === 'X' && (testboard[2][2]) === 'X') || 
-    // ((testboard[0][2] === 'X') && (testboard[1][1] === 'X' && (testboard[2][0]) === 'X')))) {
-    //     console.log(testboard[0][0], testboard[1][1],testboard[2][2])
-    //     console.log(testboard[0][2], testboard[1][1],testboard[2][0])
-    //     alert('diagonal X')
-    //     return 'WinnerX' 
-    // }
-
-    if (((testboard[0][0] === testboard[1][1]) && (testboard[1][1] === testboard[2][2])) || 
-    ((testboard[0][2] === testboard[1][1]) && (testboard[1][1] === testboard[2][0]))) {
+    if ((testboard[0][0] === testboard[1][1]) && (testboard[1][1] === testboard[2][2])) {
         console.log(testboard[0][0], testboard[1][1],testboard[2][2])
         console.log(testboard[0][2], testboard[1][1],testboard[2][0])
-        alert('diagonal: ' + testboard[0][0])
-        
-        return 'Winner' 
-    }
+        return testboard[0][0];
+    } else if ((testboard[0][2] === testboard[1][1]) && (testboard[1][1] === testboard[2][0])) 
+        {
+            console.log(testboard[0][0], testboard[1][1],testboard[2][2])
+            console.log(testboard[0][2], testboard[1][1],testboard[2][0])
+            return testboard[0][2];
+        }
 
-    
+        
     // Check for tie
     let tie = 0;  
     for (let i = 0; i < 3; i++) {
@@ -218,47 +211,60 @@ const gameControl = (function() {
         return "tie";
     } else {
         return "not tie";
+        };
         }
+    winner = '';
+    let activePlayer = playerOne;
+
+    // Logic for game turns, check winnner, change player
+    do {
+        let gameturn = playTurn(activePlayer.name);
+      
+          Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+          console.table(Gameboard.getBoard())
+          
+          winner = checkWin();
+          console.log('winner', winner)
+          if (winner === 'X') {
+             alert('winner is ' + winner)
+              break
+          } else if (winner === 'O') {
+
+            alert('winner is ' + winner)
+            break
+          }
+                    
+          activePlayer = changeActivePlayer(activePlayer); // change player turn
+          console.log('activePlayer', activePlayer)    
+      } while ((winner !== 'X') || (winner !== 'O'));
+
 
     }
-    
-   
-    // Setting player turns
-    let activePlayer = playerOne // variable to hold name of player whose turn it is, maybe not necessary
-    console.log('activePlayer', activePlayer)
+
+    // // Setting player turns
+    // let activePlayer = playerOne // variable to hold name of player whose turn it is, maybe not necessary
+    // console.log('activePlayer', activePlayer)
  
-    // While loop prompting choices until game is won
-    let winner = '';
+    // // While loop prompting choices until game is won
+    // let winner = '';
 
-    while (!winner) {
-
-        let gameturn = playTurn(activePlayer.name);
+    // while (winner !== 'X')   {
+    //     let gameturn = playTurn(activePlayer.name);
     
-        Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
-        console.table(Gameboard.getBoard())
+    //     Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+    //     console.table(Gameboard.getBoard())
         
-        let winTest = checkWin();
-        console.log('winTest', winTest)
-
-        //use a switch to sort win conditions?
+    //     let winner = checkWin();
+    //     console.log('winner', winner)
+    //     if (winner = 'X') {
+    //         break
+    //     }
         
-        if (winTest === 'tie') {
-            alert("It's a tie")
-            alert("end of game")
-            alert('insert, do you want to play again?  later')
-        
-            break;
-        }
-
-        
-        activePlayer = changeActivePlayer(activePlayer); // change player turn
-        console.log('activePlayer', activePlayer)
-
-       
-
-    }   
+    //     activePlayer = changeActivePlayer(activePlayer); // change player turn
+    //     console.log('activePlayer', activePlayer)    
+    // }   
     
-})();
+)();
 
 
 
