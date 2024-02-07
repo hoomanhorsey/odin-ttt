@@ -123,12 +123,86 @@ const gameControl = (function() {
     // checkWin method
 
     const checkWin = () => {
-    alert("Currently testing conditions for tie")
+    alert("Currently testing conditions" )
 
     board = Gameboard.getBoard();
-    // const testBoard = [['X', 'X', 'X'], ['X', 'X', 'X'], ['X', 'X', 'X']];
+    const testboard = [['O', 'X', 'X'], ['O', 'X', 'X'], ['X', 'O', 'O']];
+
+    for (let i = 0; i < 3; i++) {
+        let testX = 0;
+        let testO = 0;
+        console.log('TESTING ROW '+ i)
+        for (let j = 0; j < 3; j++) {
+            
+            switch (testboard[i][j]) {
+                case 'X':
+                    testX++
+                    break;
+                case 'O':
+                    testO++
+                    break;
+            }
+            console.log('testX: ' + testX +', testO:' + testO)
+
+             if (testX === 3) {
+                alert("WINNER! WINNER! TOFU DINNER! XXX")
+                return 'WinnerX'
+                } else if (testO === 3) {
+                    alert("WINNER! WINNER! TOFU DINNER! OOO")
+                    return 'WinnerO'
+                }
+
+            }
+    }
 
 
+    // Check for win - down columns
+    for (let j = 0; j < 3; j++) {
+        let testX = 0;
+        let testO = 0;
+        console.log('TESTING COLUMN '+ j)
+        for (let i = 0; i < 3; i++){
+            
+            switch (testboard[i][j]) {
+                case 'X':
+                    testX++
+                    break;
+                case 'O':
+                    testO++
+                    break;
+            }
+            console.log('testX: ' + testX +', testO:' + testO)
+
+             if (testX === 3) {
+                alert("WINNER! WINNER! TOFU DINNER! XXX")
+                return 'WinnerX'
+                } else if (testO === 3) {
+                    alert("WINNER! WINNER! TOFU DINNER! OOO")
+                    return 'WinnerO'
+                }}
+        }
+
+    // Check for win - diagonals
+
+
+    // if (((testboard[0][0] === 'X') && (testboard[1][1] === 'X' && (testboard[2][2]) === 'X') || 
+    // ((testboard[0][2] === 'X') && (testboard[1][1] === 'X' && (testboard[2][0]) === 'X')))) {
+    //     console.log(testboard[0][0], testboard[1][1],testboard[2][2])
+    //     console.log(testboard[0][2], testboard[1][1],testboard[2][0])
+    //     alert('diagonal X')
+    //     return 'WinnerX' 
+    // }
+
+    if (((testboard[0][0] === testboard[1][1]) && (testboard[1][1] === testboard[2][2])) || 
+    ((testboard[0][2] === testboard[1][1]) && (testboard[1][1] === testboard[2][0]))) {
+        console.log(testboard[0][0], testboard[1][1],testboard[2][2])
+        console.log(testboard[0][2], testboard[1][1],testboard[2][0])
+        alert('diagonal: ' + testboard[0][0])
+        
+        return 'Winner' 
+    }
+
+    
     // Check for tie
     let tie = 0;  
     for (let i = 0; i < 3; i++) {
@@ -139,7 +213,6 @@ const gameControl = (function() {
                 console.log(tie);
             }
         }
-      
     }
     if (tie === 0) {
         return "tie";
@@ -147,23 +220,8 @@ const gameControl = (function() {
         return "not tie";
         }
 
-    // Check for win
-
-    let test = 0;
-    for (let i = 0; i < 2; i++) {
-        for (let j = 0; j < 2; j++){
-            if (board[i][j] === 'X') {
-                test++
-            }
-        if (test === 3) {
-            alert("WINNER! WINNER! TOFU DINNER!")
-        }
-        }
-
     }
-
-
-    }
+    
    
     // Setting player turns
     let activePlayer = playerOne // variable to hold name of player whose turn it is, maybe not necessary
@@ -181,6 +239,8 @@ const gameControl = (function() {
         
         let winTest = checkWin();
         console.log('winTest', winTest)
+
+        //use a switch to sort win conditions?
         
         if (winTest === 'tie') {
             alert("It's a tie")
