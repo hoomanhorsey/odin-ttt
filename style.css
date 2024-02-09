@@ -1,0 +1,19 @@
+.boardDisplay {
+    font-size: 5rem;
+}
+
+.cell {
+    display: grid;
+    font-size: 3rem;
+    border: 1px;
+    border-style: solid;
+    color: blue
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border: 1px;
+    border-style: solid;
+    color: red;
+}
