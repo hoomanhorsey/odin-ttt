@@ -76,7 +76,18 @@ const displayBoard = (function() {
     })();
 
 
-// gameControl object  
+
+// // Test Display IIFE
+// const testDisplay = (function() {
+//     let testDisplay = document.querySelector('.testDisplay');
+//     testDisplay.textContent = ' ';
+//     console.log('testBoard.board board display')
+    
+//     displayBoard.display(Gameboard.getBoard(), '- called from Test Display');
+    
+//     })();
+    
+// gameControl object
 const gameControl = (function() {     
 
     displayBoard.display(Gameboard.getBoard(), '- called from gameControl 1');
@@ -88,28 +99,48 @@ const gameControl = (function() {
     playerOne.setMarker('X'); 
     playerTwo.setMarker("O");
 
-
- 
-
-    // play turn method
-    const playTurn = (activePlayer) => alert('hello, from playTurn called');
-        // let board = Gameboard.getBoard();
-        // let row;
-        // let column;
-        // do {
-        //     row = prompt(activePlayer + ', choose Row Number');
-        //     column = prompt(activePlayer + ', choose Column Number');  
-        //     if (board[row][column] === ' ') { break; 
-        //     } alert('Position is already taken, please re-enter')
-        // } while (board[row][column] != ' ' );      
-  
-        // return { row, column }
-
-    // function playTurn() {
-    //     alert('hello function play Turn')
-    //     return playTurn;
+    // Get player names to create player - // Insert this for final
+    // const createPlayer = (number) => {
+    //     let playerName = '';
+    
+    //     while (playerName === '') {
+    //     playerName = prompt('Name of Player ' + number + ' ?')
+    //     }
+    //     return player(playerName);
     // }
     
+    // choose marker method
+    const chooseMarker = () => {
+        let marker = "";
+
+        while (((marker.toUpperCase() != 'X') && (marker.toUpperCase() != 'O')) )  {   
+            marker = prompt(playerOne.name + ", please enter which marker you would like.  'X' or 'O'");
+            }
+        
+        marker = marker.toUpperCase();
+    
+        if (marker === "X") {
+            playerOne.setMarker(marker); playerTwo.setMarker("O");
+            } else {playerOne.setMarker(marker); playerTwo.setMarker("X"); }
+    
+        console.log(playerOne.name + ' is represented by ' + playerOne.getMarker() +'. ' + playerTwo.name + ' is represented by ' + playerTwo.getMarker() + ' .')
+    }
+
+    // play turn method
+    const playTurn = (activePlayer) => {  
+        
+        let board = Gameboard.getBoard();
+        let row;
+        let column;
+        do {
+            row = prompt(activePlayer + ', choose Row Number');
+            column = prompt(activePlayer + ', choose Column Number');  
+            if (board[row][column] === ' ') { break; 
+            } alert('Position is already taken, please re-enter')
+        } while (board[row][column] != ' ' );      
+  
+        return { row, column }
+    }
 
     // change Active Player method
     const changeActivePlayer = (activePlayer) => {
@@ -210,45 +241,47 @@ const gameControl = (function() {
 
     // chooseMarker();
 
-    const clickHandler = () => {
 
-        alert('oh yes')
-        //     let submitTurn = document.querySelector('.submitTurn');
-        //     submitTurn.addEventListener('click', () => {
-        //         alert('Submitted Turn')
-        //         displayBoard.display(Gameboard.getBoard());
-        //         console.log('hi')
-        
-        //         gameControl.playTurn();
-        //         console.log('Submitted Turn')
+
+    // PLAY TURN ON REQUEST
+
+    const playRound = () => {
+
+        let gameturn = playTurn(activePlayer.name);
+      
+          Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+        //   displayBoard.display(Gameboard.getBoard());
+          console.log('should be displaying here why not?')
+          
+        winner = checkWin();
+            
+            winMessage = winnerMessage(winner);
+
+            if (winMessage !== undefined) {
+                alert(winMessage);
+            }
+
+          activePlayer = changeActivePlayer(activePlayer); 
+          console.log('activePlayer', activePlayer)    
+          displayBoard.display(Gameboard.getBoard(), "Called from Game Control do while loop");
+
+        return {playRound}
+
     }
 
 
-    // clickHandler(playTurn(activePlayer));
-    return { playTurn }
 
-    })();
-  
+    // // do while loop that keeps playing turns until a winner has been found
+    // do {
 
-
-
-
-
-    // // PLAY TURN ON REQUEST
-
-    // function playRound (activePlayer) {
-
-    //     let winner = '';
-
-    //     console.log('playround called')
-
-        
-
-    //     let gameturn = gameControl.playTurn(activePlayer.name);
+    //     let gameturn = playTurn(activePlayer.name);
       
     //       Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
     //     //   displayBoard.display(Gameboard.getBoard());
     //       console.log('should be displaying here why not?')
+
+    //       Gameboard.printBoard();
+    //       console.log('Gameboard.printBoard() ^')
           
     //     winner = checkWin();
             
@@ -256,13 +289,67 @@ const gameControl = (function() {
 
     //         if (winMessage !== undefined) {
     //             alert(winMessage);
+    //             break;
     //         }
 
     //       activePlayer = changeActivePlayer(activePlayer); 
     //       console.log('activePlayer', activePlayer)    
     //       displayBoard.display(Gameboard.getBoard(), "Called from Game Control do while loop");
 
-    //     }
+    //   } while ((winner !== 'X') || (winner !== 'O'));
+
+    // // }
+
+
+    displayBoard.display(Gameboard.getBoard());
+
+    let bwinner = ' ';
+
+    bwinner = checkWin();
+
+    if ((bwinner === 'X') || (bwinner === 'O') || (bwinner === 'Tie')) {
+        alert(winMessage);
+    } else {
+
+        let gameturn = playTurn(activePlayer.name);
+        Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+    }
+    })();
+  
+
+
+
+
+
+    // PLAY TURN ON REQUEST
+
+    function playRound (activePlayer) {
+
+        let winner = '';
+
+        console.log('playround called')
+
+        
+
+        let gameturn = gameControl.playTurn(activePlayer.name);
+      
+          Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+        //   displayBoard.display(Gameboard.getBoard());
+          console.log('should be displaying here why not?')
+          
+        winner = checkWin();
+            
+            winMessage = winnerMessage(winner);
+
+            if (winMessage !== undefined) {
+                alert(winMessage);
+            }
+
+          activePlayer = changeActivePlayer(activePlayer); 
+          console.log('activePlayer', activePlayer)    
+          displayBoard.display(Gameboard.getBoard(), "Called from Game Control do while loop");
+
+        }
 
     
 
@@ -273,13 +360,14 @@ const gameControl = (function() {
         displayBoard.display(Gameboard.getBoard());
         console.log('hi')
 
-        gameControl.playTurn();
+        playRound();
         console.log('Submitted Turn')
     })
+
 }
 
-clickHandler();
 
+clickHandler(playRound(activePlayer));
 
 // gameControl();
 

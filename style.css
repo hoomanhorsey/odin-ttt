@@ -2,12 +2,18 @@
     font-size: 5rem;
 }
 
+.testDisplay {
+    font-size: 5rem;
+}
 .cell {
     display: grid;
     font-size: 3rem;
     border: 1px;
     border-style: solid;
-    color: blue
+    color: blue;
+    height: 4rem;
+    width: 4rem;
+    
 }
 
 .row {
