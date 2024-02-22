@@ -85,6 +85,8 @@ const gameControl = (function() {
     const playerOne = player('Whiskey'); // For the time being, hard code names.
     const playerTwo = player('Luna');
 
+    alert(playerOne.name + 'from Gamecontrol, at time player names are declared')
+
     playerOne.setMarker('X'); 
     playerTwo.setMarker("O");
 
@@ -210,15 +212,14 @@ const gameControl = (function() {
           
     let winner = '';
     let activePlayer = playerOne;
+    alert(activePlayer.name + 'from within GameControl')
+    // displayBoard.display(Gameboard.getBoard(), 'called from outside of do while loop');
 
-
-    
     // chooseMarker();
-
-
 
     const clickHandler = () => {
 
+        alert('oh yes')
             let submitTurn = document.querySelector('.submitTurn');
             submitTurn.addEventListener('click', () => {
                 alert('Submitted Turn, from inside gameControl')
@@ -236,7 +237,6 @@ const gameControl = (function() {
                 console.log('Submitted Turn, from inside Game Control   ')
 
                 displayBoard.display(Gameboard.getBoard(), "Called from clickhandler");
-
                 winner = checkWin();
             
                 winMessage = winnerMessage(winner);
@@ -245,8 +245,8 @@ const gameControl = (function() {
                             alert(winMessage);
                         }
             
-                    activePlayer = changeActivePlayer(activePlayer.name); 
-                    console.log('activePlayer', activePlayer.name)    
+                    activePlayer = changeActivePlayer(activePlayer); 
+                    console.log('activePlayer', activePlayer)    
                    
 
 
