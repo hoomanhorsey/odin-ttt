@@ -89,21 +89,25 @@ const gameControl = (function() {
     playerTwo.setMarker("O");
 
 
- 
+
 
     // play turn method
-    const playTurn = (activePlayer) => alert('hello, from playTurn called');
-        // let board = Gameboard.getBoard();
-        // let row;
-        // let column;
-        // do {
-        //     row = prompt(activePlayer + ', choose Row Number');
-        //     column = prompt(activePlayer + ', choose Column Number');  
-        //     if (board[row][column] === ' ') { break; 
-        //     } alert('Position is already taken, please re-enter')
-        // } while (board[row][column] != ' ' );      
+    const playTurn = (activePlayer) => {
+        alert('hello, from playTurn called');
+        let board = Gameboard.getBoard();
+        let row;
+        let column;
+        do {
+            row = prompt(activePlayer + ', choose Row Number');
+            column = prompt(activePlayer + ', choose Column Number');  
+            if (board[row][column] === ' ') { break; 
+            } alert('Position is already taken, please re-enter')
+        } while (board[row][column] != ' ' );      
   
-        // return { row, column }
+
+        
+        return { row, column }
+    }
 
     // function playTurn() {
     //     alert('hello function play Turn')
@@ -206,26 +210,51 @@ const gameControl = (function() {
           
     let winner = '';
     let activePlayer = playerOne;
-    // displayBoard.display(Gameboard.getBoard(), 'called from outside of do while loop');
 
+
+    
     // chooseMarker();
+
+
 
     const clickHandler = () => {
 
-        alert('oh yes')
-        //     let submitTurn = document.querySelector('.submitTurn');
-        //     submitTurn.addEventListener('click', () => {
-        //         alert('Submitted Turn')
-        //         displayBoard.display(Gameboard.getBoard());
-        //         console.log('hi')
+            let submitTurn = document.querySelector('.submitTurn');
+            submitTurn.addEventListener('click', () => {
+                alert('Submitted Turn, from inside gameControl')
+                displayBoard.display(Gameboard.getBoard());
+                console.log('hi')
         
-        //         gameControl.playTurn();
-        //         console.log('Submitted Turn')
-    }
+                // gameControl.playTurn();
+
+                let gameturn = gameControl.playTurn(activePlayer.name);
+      
+                Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+                displayBoard.display(Gameboard.getBoard());
+                console.log('should be displaying here why not?')
+
+                console.log('Submitted Turn, from inside Game Control   ')
+
+                displayBoard.display(Gameboard.getBoard(), "Called from clickhandler");
+
+                winner = checkWin();
+            
+                winMessage = winnerMessage(winner);
+            
+                        if (winMessage !== undefined) {
+                            alert(winMessage);
+                        }
+            
+                    activePlayer = changeActivePlayer(activePlayer.name); 
+                    console.log('activePlayer', activePlayer.name)    
+                   
+
+
+    })};
 
 
     // clickHandler(playTurn(activePlayer));
-    return { playTurn }
+    return { playTurn , clickHandler }
 
     })();
   
@@ -264,28 +293,31 @@ const gameControl = (function() {
 
     //     }
 
-    
 
-    function clickHandler() {
-    let submitTurn = document.querySelector('.submitTurn');
-    submitTurn.addEventListener('click', () => {
-        alert('Submitted Turn')
-        displayBoard.display(Gameboard.getBoard());
-        console.log('hi')
 
-        gameControl.playTurn();
-        console.log('Submitted Turn')
-    })
-}
+// function clickHandler(activePlayer) {
+//     let submitTurn = document.querySelector('.submitTurn');
+//     submitTurn.addEventListener('click', () => {
+//         alert('Submitted Turn')
+//         alert(activePlayer);
+//         displayBoard.display(Gameboard.getBoard());
+//         console.log('hi')
 
-clickHandler();
+//         let gameturn = gameControl.playTurn(activePlayer.name);
+//         alert(gameturn);
+//         // let gameturn = gameControl.playTurn(activePlayer.name);
+      
+//         //       Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+//         //     //   displayBoard.display(Gameboard.getBoard());
+//         //       console.log('should be displaying here why not?')
+
+//         console.log('Submitted Turn')
+//     })
+// }
+gameControl.clickHandler();
 
 
 // gameControl();
-
-
-
-
 
 
 }) // end of DOM load function
