@@ -1,5 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
 
+
+
+
+
 // Gameboard object IIFE
 const Gameboard = (function() {
 
@@ -15,6 +19,7 @@ const Gameboard = (function() {
 
     // method to add piece to game board
     const addPiece = (coord1, coord2, piece) => {
+        alert('add piece')
         console.log("Adding piece to Board", coord1, coord2, piece);       
         board[coord1][coord2] = piece;
         //displayBoard.display(Gameboard.getBoard(), "Called from addpiece");
@@ -101,9 +106,8 @@ const gameControl = (function() {
     }
         
     // checkWin method
-    console.log('checkwin called. Should only be once per turn')
     const checkWin = () => {
-    console.log("Currently testing conditions")
+    console.log("Currently testing conditions - checkwin called")
 
         board = Gameboard.getBoard();
         // const testboard = [['O', 'X', 'X'], ['X', 'O', 0], [0, 'X', 0]];
@@ -211,27 +215,22 @@ const gameControl = (function() {
     let {playerOne, playerTwo, winner, activePlayer }=  initialize();
 
     // Display initial board
-    displayBoard.display(Gameboard.getBoard(), '- called from gameControl 1');
+    //displayBoard.display(Gameboard.getBoard(), '- called from gameControl 1');
 
     //alert(activePlayer.name + 'from within GameControl')
     // displayBoard.display(Gameboard.getBoard(), 'called from outside of do while loop');
 
     // attempted play round
 
-
-
-        
+      
     
     
 
-    const clickHandler = () => {
-
-        //alert('oh yes')
-        let submitTurn = document.querySelector('.submitTurn');
-        submitTurn.addEventListener('click', gameSteps)
-
-       
-    }
+    // const clickHandler = () => {
+    //     //alert('oh yes')
+    //     let submitTurn = document.querySelector('.submitTurn');
+    //     submitTurn.addEventListener('click', gameSteps)      
+    // }
 
     const gameSteps = () => {
         playRound();
@@ -241,22 +240,15 @@ const gameControl = (function() {
         setTimeout(function() {
             winner = checkWin();
             console.log('checkwin from settimeout')
-    
             winMessage = winnerMessage(winner);
-    
                 if (winMessage !== undefined) {
-                    alert(winMessage);
+                alert(winMessage);
                 }
-        }, 3000);
-        
-       
-        https://chat.openai.com/c/f74a3dfc-a03c-42a7-882f-ca17688913f5
-        
+        }, 500);
+                       
     }
 
-
     const playRound = () => {   
-        alert('yolo')
 
         // calls checkTurn to see if turn possible, returns turn co-ords
         let gameturn = checkTurn(activePlayer.name);
@@ -264,12 +256,8 @@ const gameControl = (function() {
         // calls add piece to update board
         Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
         
-        // displayBoard.display(Gameboard.getBoard());
-        // console.log('should be displaying here why not?')
-        //console.log('Submitted Turn, from inside Game Control   ')
-
         // displays board
-        displayBoard.display(Gameboard.getBoard(), "Called from clickhandler");
+        //displayBoard.display(Gameboard.getBoard(), "Called from clickhandler");
 
         activePlayer = changeActivePlayer(activePlayer); 
         console.log('activePlayer', activePlayer)                      
@@ -282,11 +270,82 @@ const gameControl = (function() {
         //         if (winMessage !== undefined) {
         //             alert(winMessage);
         //         }
-
-
         };
+  
+  //clickHandler();
 
-    // const clickHandler = () => {
+   return { checkTurn, gameSteps,
+        callCheckWin: function() {
+            checkWin(); // call checkWin when needed
+        } }
+
+    })();
+
+
+
+
+//gameControl.clickHandler();
+
+
+const screenController  = (function () {
+
+    let boardDisplay = document.querySelector('.boardDisplay');
+
+    const updateScreen = (message) => {  
+     
+        console.log('updateScreen has been' + message)
+    
+        // clear board
+        boardDisplay.textContent = ' ';
+        let board = Gameboard.getBoard();
+
+        // display player turn
+        //#TODO
+    
+        // render board
+        for (let b = 0; b < 3; b++) {
+            let row = document.createElement('div');
+            row.setAttribute('class', 'row')        
+            boardDisplay.appendChild(row);    
+    
+            for (let n = 0; n < 3; n++) {
+            
+                let cell = document.createElement('p');
+                cell.textContent = board[b][n];
+                cell.setAttribute('class', 'cell')
+                row.appendChild(cell);
+                }}      
+            }   
+
+
+    const clickHandler = () => {
+    
+
+        let submitTestTurn = document.querySelector('.testSubmitTurn');
+        submitTestTurn.addEventListener('click', gameControl.gameSteps);      
+    }
+    clickHandler();
+    updateScreen("Called from screenController");
+
+})();
+
+
+
+
+
+}) // end of DOM load function
+
+
+
+
+
+
+
+
+
+
+
+  // const clickHandler = () => {
 
     //     //alert('oh yes')
     //     let submitTurn = document.querySelector('.submitTurn');
@@ -315,26 +374,6 @@ const gameControl = (function() {
     //         activePlayer = changeActivePlayer(activePlayer); 
     //         console.log('activePlayer', activePlayer)                      
     //     })};
-
-    clickHandler();
-
-   // return { checkTurn, clickHandler }
-
-    })();
-
-}) // end of DOM load function
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
