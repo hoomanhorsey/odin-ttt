@@ -58,8 +58,6 @@ const displayBoard = (function() {
 
     let boardDisplay = document.querySelector('.boardDisplay');
     boardDisplay.textContent = ' ';
- //   console.log('displayBoard.board board display ' + message)
- //   console.table(board)
 
     for (let b = 0; b < 3; b++) {
         let row = document.createElement('div');
@@ -73,7 +71,6 @@ const displayBoard = (function() {
             cell.setAttribute('class', 'cell')
             row.appendChild(cell);
             }}      
-//        console.log('end of displayboard call')
         }
     return { display } 
 
@@ -95,6 +92,26 @@ const gameControl = (function() {
             column = prompt(activePlayerName + ', choose Column Number');  
             if (board[row][column] === ' ') { break; 
             } alert('Position is already taken, please re-enter')
+        } while (board[row][column] != ' ' );      
+        
+        return { row, column }
+    } 
+
+    // checkTurn method (checks board to determine if play is possible)
+    const checkBoardTurn = (activePlayerName, coords) => {
+
+        console.log('coords ' + coords)
+        let board = Gameboard.getBoard();
+        let row = coords[0];
+        let column = coords[2];
+        do {
+            if (board[row][column] === ' ') 
+                { 
+                console.log('turn okay')
+                break; 
+                } 
+            alert('Position is already taken, please re-enter')
+            break;
         } while (board[row][column] != ' ' );      
         
         return { row, column }
@@ -216,26 +233,7 @@ const gameControl = (function() {
 // Logic for game turns, check winnner, change player
 
     let {playerOne, playerTwo, winner, activePlayer }=  initialize();
-
-    // Display initial board
-    //displayBoard.display(Gameboard.getBoard(), '- called from gameControl 1');
-
-    //alert(activePlayer.name + 'from within GameControl')
-    // displayBoard.display(Gameboard.getBoard(), 'called from outside of do while loop');
-
-    // attempted play round
-
-      
-    
-    
-
-    // const clickHandler = () => {
-    //     //alert('oh yes')
-    //     let submitTurn = document.querySelector('.submitTurn');
-    //     submitTurn.addEventListener('click', gameSteps)      
-    // }
-
-
+  
 
 // Somehwat redundant now!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     const gameSteps = () => {
@@ -262,36 +260,32 @@ const gameControl = (function() {
 
         // calls add piece to update board
         Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
-        
-        // displays board
-        //displayBoard.display(Gameboard.getBoard(), "Called from clickhandler");
 
         activePlayer = changeActivePlayer(activePlayer); 
         console.log('activePlayer', activePlayer)                      
 
-        // winner = checkWin();
-        // console.log('checkwin')
-    
-        // winMessage = winnerMessage(winner);
-    
-        //         if (winMessage !== undefined) {
-        //             alert(winMessage);
-        //         }
+       
         };
-  
-  //clickHandler();
 
-   return { checkTurn, gameSteps, getActivePlayer, playRound, checkWin, winnerMessage
-        // callCheckWin: function() {
-        //     checkWin(); // call checkWin when needed
-        } 
+    const playBoardRound = (coords) => {   
+
+        // calls checkTurn to see if turn possible, returns turn co-ords
+        let gameturn = checkBoardTurn(activePlayer.name, coords);
+        console.log('gameturn' + gameturn.row + gameturn.column)
+    
+        // calls add piece to update board
+        Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+    
+        activePlayer = changeActivePlayer(activePlayer); 
+        console.log('activePlayer', activePlayer)                      
+               
+            };
+  
+
+   return { checkTurn, gameSteps, getActivePlayer, playRound, playBoardRound, checkWin, winnerMessage } 
 
     })();
 
-
-
-
-//gameControl.clickHandler();
 
 
 const screenController  = (function () {
@@ -361,59 +355,48 @@ const clickHandler = () => {
 
     }
 
-    const clickTest = () => {
-    
-        let testVar = document.querySelector('.testDisplay');
-        testVar.addEventListener('click', () => {
-            console.log('Vartimes')
-        })
-
-
-    }
-
-    // const clickTestAll = () => {
-    
-    //     let testVar = document.querySelectorAll('.cell');
-    //     testVar.forEach( (e) => {
-
-    //         e.addEventListener('click', () => {
-    //         console.log('Vartimes')
-    //     })
-    // })
-
-    // }
-
     const clickHandlerCell = () => {
 
-        // updateScreen();
+        updateScreen();
         let cells = document.querySelectorAll('.cell');
         cells.forEach((e) => {
             e.addEventListener('click', (e) => {
             console.log(e.target)    
             console.log(e.target.dataset.index)
 
-          
-           console.log('yo celly')
+            gameControl.playBoardRound(e.target.dataset.index);
+            displayBoard.display(Gameboard.getBoard(), "Called from clickHandlerCell");
+            screenController.updateScreen('from ClickHandlerCell');
+            setTimeout(function() {
+                winner = gameControl.checkWin();
+                console.log('checkwin from settimeout')
+                winMessage = gameControl.winnerMessage(winner);
+                    if (winMessage !== undefined) {
+                    alert(winMessage);
+                    }
+            }, 250);
+
         } 
         )})
+
     };
 
 
+// NOTE. ClickHandler Board renews the event listener. For some reason clickHandler Cell does not.  
+//It won't click a second time? Not sure why.
 
-    // clickTestAll();
-        clickTest();
 
     clickHandlerCell();
-    // clickHandlerBoard();
+    //clickHandlerBoard();
 
     clickHandler();
-    updateScreen("Called from screenController");
 
     return {updateScreen, clickHandlerCell}
 })();
 
 
 screenController.clickHandlerCell();
+
 
 
 }) // end of DOM load function
