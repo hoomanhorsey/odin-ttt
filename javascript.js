@@ -1,9 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-
-
-
-
 // Gameboard object IIFE
 const Gameboard = (function() {
 
@@ -19,7 +15,6 @@ const Gameboard = (function() {
 
     // method to add piece to game board
     const addPiece = (coord1, coord2, piece) => {
-        alert('add piece')
         console.log("Adding piece to Board", coord1, coord2, piece);       
         board[coord1][coord2] = piece;
         //displayBoard.display(Gameboard.getBoard(), "Called from addpiece");
@@ -48,73 +43,86 @@ function player(playername) {
         return { getName, name, setMarker, getMarker}
     }
 
-// Display Object IIFE
-const displayBoard = (function() {
+// // Display Object IIFE
+// const displayBoard = (function() {
    
-    const display = (calledBoard, message) => {
-    let board = calledBoard;
+//     const display = (calledBoard, message) => {
+//     let board = calledBoard;
 
-    console.log('displayboard has been called ' + message)
+//     console.log('displayboard has been called ' + message)
 
-    let boardDisplay = document.querySelector('.boardDisplay');
-    boardDisplay.textContent = ' ';
+//     let boardDisplay = document.querySelector('.boardDisplay');
+//     boardDisplay.textContent = ' ';
 
-    for (let b = 0; b < 3; b++) {
-        let row = document.createElement('div');
-        row.setAttribute('class', 'row')        
-        boardDisplay.appendChild(row);    
+//     for (let b = 0; b < 3; b++) {
+//         let row = document.createElement('div');
+//         row.setAttribute('class', 'row')        
+//         boardDisplay.appendChild(row);    
 
-        for (let n = 0; n < 3; n++) {
+//         for (let n = 0; n < 3; n++) {
         
-            let cell = document.createElement('p');
-            cell.textContent = board[b][n];
-            cell.setAttribute('class', 'cell')
-            row.appendChild(cell);
-            }}      
-        }
-    return { display } 
+//             let cell = document.createElement('p');
+//             cell.textContent = board[b][n];
+//             cell.setAttribute('class', 'cell')
+//             row.appendChild(cell);
+//             }}      
+//         }
+//     return { display } 
 
-    })();
+//     })();
 
 
 // gameControl object  
-const gameControl = (function() {     
-
-    
+const gameControl = (function() {        
  
-    // checkTurn method (checks board to determine if play is possible)
-    const checkTurn = (activePlayerName) => {
-        let board = Gameboard.getBoard();
-        let row;
-        let column;
-        do {
-            row = prompt(activePlayerName + ', choose Row Number');
-            column = prompt(activePlayerName + ', choose Column Number');  
-            if (board[row][column] === ' ') { break; 
-            } alert('Position is already taken, please re-enter')
-        } while (board[row][column] != ' ' );      
-        
-        return { row, column }
-    } 
-
-    // checkTurn method (checks board to determine if play is possible)
+      // checkTurn method (checks board to determine if play is possible)
     const checkBoardTurn = (activePlayerName, coords) => {
 
         console.log('coords ' + coords)
         let board = Gameboard.getBoard();
+        console.table(board)
         let row = coords[0];
         let column = coords[2];
-        do {
-            if (board[row][column] === ' ') 
-                { 
-                console.log('turn okay')
-                break; 
-                } 
-            alert('Position is already taken, please re-enter')
-            break;
-        } while (board[row][column] != ' ' );      
         
-        return { row, column }
+        
+             
+        if ((board[row][column] === 'X') ||  (board[row][column] === 'O'))
+        { 
+            alert('Position is already taken, please re-enter')
+            alert('need to change the function that calls this alert, to accomodate a different return objbect')
+            return;
+        } else {
+            console.log('turn okay')
+            return { row, column }
+        
+        } 
+        
+        
+        // if (board[row][column] === ' ') 
+        //         { 
+        //         console.log('turn okay')
+        //         return { row, column }
+        //         } 
+        //     else if  (board[row][column] != ' ' )  {
+        //      alert('Position is already taken, please re-enter')
+        //      alert('need to change the function that calls this alert, to accomodate a different return objbect')
+        //      return;
+        //     }
+        
+        // return { row, column }
+        
+        
+        // do {
+        //     if (board[row][column] === ' ') 
+        //         { 
+        //         console.log('turn okay')
+        //         break; 
+        //         } 
+        //     alert('Position is already taken, please re-enter')
+        //     break;
+        // } while (board[row][column] != ' ' );      
+        
+        // return { row, column }
     } 
 
     // change Active Player method
@@ -235,37 +243,6 @@ const gameControl = (function() {
     let {playerOne, playerTwo, winner, activePlayer }=  initialize();
   
 
-// Somehwat redundant now!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    const gameSteps = () => {
-        playRound();
-        displayBoard.display(Gameboard.getBoard(), "Called from gamesteps");
-        screenController.updateScreen();
-        console.log('about to call Checkwin')
-        
-        setTimeout(function() {
-            winner = checkWin();
-            console.log('checkwin from settimeout')
-            winMessage = winnerMessage(winner);
-                if (winMessage !== undefined) {
-                alert(winMessage);
-                }
-        }, 500);
-                       
-    }
-
-    const playRound = () => {   
-
-        // calls checkTurn to see if turn possible, returns turn co-ords
-        let gameturn = checkTurn(activePlayer.name);
-
-        // calls add piece to update board
-        Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
-
-        activePlayer = changeActivePlayer(activePlayer); 
-        console.log('activePlayer', activePlayer)                      
-
-       
-        };
 
     const playBoardRound = (coords) => {   
 
@@ -277,12 +254,11 @@ const gameControl = (function() {
         Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
     
         activePlayer = changeActivePlayer(activePlayer); 
-        console.log('activePlayer', activePlayer)                      
-               
+        console.log('activePlayer', activePlayer)                                    
             };
   
 
-   return { checkTurn, gameSteps, getActivePlayer, playRound, playBoardRound, checkWin, winnerMessage } 
+   return { getActivePlayer, playBoardRound, checkWin, winnerMessage } 
 
     })();
 
@@ -291,6 +267,34 @@ const gameControl = (function() {
 const screenController  = (function () {
 
     let boardDisplay = document.querySelector('.boardDisplay');
+
+    
+
+
+    const clickHandlerCell = () => {
+
+        let cells = document.querySelectorAll('.cell');
+        cells.forEach((e) => {
+            e.addEventListener('click', (e) => {
+            console.log(e.target)    
+            console.log(e.target.dataset.index)
+
+            gameControl.playBoardRound(e.target.dataset.index);
+            //displayBoard.display(Gameboard.getBoard(), "Called from clickHandlerCell");
+            // screenController.updateScreen('from ClickHandlerCell');
+            updateScreen(' from clickHandlerCell 2nd time')
+            setTimeout(function() {
+                winner = gameControl.checkWin();
+                console.log('checkwin from settimeout')
+                winMessage = gameControl.winnerMessage(winner);
+                    if (winMessage !== undefined) {
+                    alert(winMessage);
+                    }
+            }, 250);
+
+        } 
+        )})
+    };
 
     const updateScreen = (message) => {  
      
@@ -316,7 +320,6 @@ const screenController  = (function () {
             boardDisplay.appendChild(row);    
     
             for (let n = 0; n < 3; n++) {
-            
                 let cell = document.createElement('p');
                 cell.textContent = board[b][n];
                 cell.setAttribute('class', 'cell');
@@ -324,76 +327,16 @@ const screenController  = (function () {
                 cell.dataset.coords = [b,n];
                 row.appendChild(cell);
                 }}      
+            clickHandlerCell();
             }   
 
-// Somehwat redundant now!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-const clickHandler = () => {
-        let submitTestTurn = document.querySelector('.testSubmitTurn');
-        submitTestTurn.addEventListener('click', gameControl.gameSteps);      
+        
 
-    }
-
-    const clickHandlerBoard = () => {
-
-        let board = document.querySelector('.boardDisplay');
-        board.addEventListener('click', () => {
-
-        gameControl.playRound();
-        displayBoard.display(Gameboard.getBoard(), "Called from clickHandlerBoard");
-        screenController.updateScreen();
-        console.log('about to call Checkwin')
-            
-            setTimeout(function() {
-                winner = gameControl.checkWin();
-                console.log('checkwin from settimeout')
-                winMessage = gameControl.winnerMessage(winner);
-                    if (winMessage !== undefined) {
-                    alert(winMessage);
-                    }
-            }, 250);
-        } )
-
-    }
-
-    const clickHandlerCell = () => {
-
-        updateScreen();
-        let cells = document.querySelectorAll('.cell');
-        cells.forEach((e) => {
-            e.addEventListener('click', (e) => {
-            console.log(e.target)    
-            console.log(e.target.dataset.index)
-
-            gameControl.playBoardRound(e.target.dataset.index);
-            displayBoard.display(Gameboard.getBoard(), "Called from clickHandlerCell");
-            screenController.updateScreen('from ClickHandlerCell');
-            setTimeout(function() {
-                winner = gameControl.checkWin();
-                console.log('checkwin from settimeout')
-                winMessage = gameControl.winnerMessage(winner);
-                    if (winMessage !== undefined) {
-                    alert(winMessage);
-                    }
-            }, 250);
-
-        } 
-        )})
-
-    };
-
-
-// NOTE. ClickHandler Board renews the event listener. For some reason clickHandler Cell does not.  
-//It won't click a second time? Not sure why.
-
-
-    clickHandlerCell();
-    //clickHandlerBoard();
-
-    clickHandler();
 
     return {updateScreen, clickHandlerCell}
 })();
 
+screenController.updateScreen(' from global');
 
 screenController.clickHandlerCell();
 
@@ -404,97 +347,3 @@ screenController.clickHandlerCell();
 
 
 
-
-
-
-
-
-
-
-  // const clickHandler = () => {
-
-    //     //alert('oh yes')
-    //     let submitTurn = document.querySelector('.submitTurn');
-    //     submitTurn.addEventListener('click', () => {
-    //     //alert('Submitted Turn, from inside gameControl')
-    //     //displayBoard.display(Gameboard.getBoard());
-    //     //console.log('hi')
-
-    //     let gameturn = checkTurn(activePlayer.name);
-
-    //     Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
-    //     displayBoard.display(Gameboard.getBoard());
-    //     console.log('should be displaying here why not?')
-
-    //     console.log('Submitted Turn, from inside Game Control   ')
-
-    //     displayBoard.display(Gameboard.getBoard(), "Called from clickhandler");
-    //     winner = checkWin();
-    
-    //     winMessage = winnerMessage(winner);
-    
-    //             if (winMessage !== undefined) {
-    //                 alert(winMessage);
-    //             }
-    
-    //         activePlayer = changeActivePlayer(activePlayer); 
-    //         console.log('activePlayer', activePlayer)                      
-    //     })};
-
-
-
-
-
-
-
-    // // PLAY TURN ON REQUEST
-
-    // function playRound (activePlayer) {
-
-    //     let winner = '';
-
-    //     console.log('playround called')
-
-        
-
-    //     let gameturn = gameControl.playTurn(activePlayer.name);
-      
-    //       Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
-    //     //   displayBoard.display(Gameboard.getBoard());
-    //       console.log('should be displaying here why not?')
-          
-    //     winner = checkWin();
-            
-    //         winMessage = winnerMessage(winner);
-
-    //         if (winMessage !== undefined) {
-    //             alert(winMessage);
-    //         }
-
-    //       activePlayer = changeActivePlayer(activePlayer); 
-    //       console.log('activePlayer', activePlayer)    
-    //       displayBoard.display(Gameboard.getBoard(), "Called from Game Control do while loop");
-
-    //     }
-
-
-
-// function clickHandler(activePlayer) {
-//     let submitTurn = document.querySelector('.submitTurn');
-//     submitTurn.addEventListener('click', () => {
-//         alert('Submitted Turn')
-//         alert(activePlayer);
-//         displayBoard.display(Gameboard.getBoard());
-//         console.log('hi')
-
-//         let gameturn = gameControl.playTurn(activePlayer.name);
-//         alert(gameturn);
-//         // let gameturn = gameControl.playTurn(activePlayer.name);
-      
-//         //       Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
-//         //     //   displayBoard.display(Gameboard.getBoard());
-//         //       console.log('should be displaying here why not?')
-
-//         console.log('Submitted Turn')
-//     })
-// }
