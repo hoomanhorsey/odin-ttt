@@ -209,6 +209,9 @@ const gameControl = (function() {
         return { playerOne, playerTwo, winner, activePlayer}
     }
 
+    const getActivePlayer = function () {
+        return activePlayer.name;
+    };
     
 // Logic for game turns, check winnner, change player
 
@@ -232,9 +235,13 @@ const gameControl = (function() {
     //     submitTurn.addEventListener('click', gameSteps)      
     // }
 
+
+
+// Somehwat redundant now!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     const gameSteps = () => {
         playRound();
         displayBoard.display(Gameboard.getBoard(), "Called from gamesteps");
+        screenController.updateScreen();
         console.log('about to call Checkwin')
         
         setTimeout(function() {
@@ -274,10 +281,10 @@ const gameControl = (function() {
   
   //clickHandler();
 
-   return { checkTurn, gameSteps,
-        callCheckWin: function() {
-            checkWin(); // call checkWin when needed
-        } }
+   return { checkTurn, gameSteps, getActivePlayer, playRound, checkWin, winnerMessage
+        // callCheckWin: function() {
+        //     checkWin(); // call checkWin when needed
+        } 
 
     })();
 
@@ -300,6 +307,12 @@ const screenController  = (function () {
         let board = Gameboard.getBoard();
 
         // display player turn
+        let whoseTurn  = document.querySelector('.whoseTurn');
+        let turnID = document.createElement('p')
+        turnID.setAttribute('class', 'turnID')              
+        turnID.textContent = "Player turn: " + gameControl.getActivePlayer();
+        whoseTurn.textContent = ' ';    
+        whoseTurn.appendChild(turnID);
         //#TODO
     
         // render board
@@ -312,25 +325,95 @@ const screenController  = (function () {
             
                 let cell = document.createElement('p');
                 cell.textContent = board[b][n];
-                cell.setAttribute('class', 'cell')
+                cell.setAttribute('class', 'cell');
+                cell.setAttribute('data-index', [b,n]);
+                cell.dataset.coords = [b,n];
                 row.appendChild(cell);
                 }}      
             }   
 
-
-    const clickHandler = () => {
-    
-
+// Somehwat redundant now!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+const clickHandler = () => {
         let submitTestTurn = document.querySelector('.testSubmitTurn');
         submitTestTurn.addEventListener('click', gameControl.gameSteps);      
+
     }
+
+    const clickHandlerBoard = () => {
+
+        let board = document.querySelector('.boardDisplay');
+        board.addEventListener('click', () => {
+
+        gameControl.playRound();
+        displayBoard.display(Gameboard.getBoard(), "Called from clickHandlerBoard");
+        screenController.updateScreen();
+        console.log('about to call Checkwin')
+            
+            setTimeout(function() {
+                winner = gameControl.checkWin();
+                console.log('checkwin from settimeout')
+                winMessage = gameControl.winnerMessage(winner);
+                    if (winMessage !== undefined) {
+                    alert(winMessage);
+                    }
+            }, 250);
+        } )
+
+    }
+
+    const clickTest = () => {
+    
+        let testVar = document.querySelector('.testDisplay');
+        testVar.addEventListener('click', () => {
+            console.log('Vartimes')
+        })
+
+
+    }
+
+    // const clickTestAll = () => {
+    
+    //     let testVar = document.querySelectorAll('.cell');
+    //     testVar.forEach( (e) => {
+
+    //         e.addEventListener('click', () => {
+    //         console.log('Vartimes')
+    //     })
+    // })
+
+    // }
+
+    const clickHandlerCell = () => {
+
+        // updateScreen();
+        let cells = document.querySelectorAll('.cell');
+        cells.forEach((e) => {
+            e.addEventListener('click', (e) => {
+            console.log(e.target)    
+            console.log(e.target.dataset.index)
+
+          
+           console.log('yo celly')
+        } 
+        )})
+    };
+
+
+
+    // clickTestAll();
+        clickTest();
+
+    clickHandlerCell();
+    // clickHandlerBoard();
+
     clickHandler();
     updateScreen("Called from screenController");
 
+    return {updateScreen, clickHandlerCell}
 })();
 
 
-
+screenController.clickHandlerCell();
 
 
 }) // end of DOM load function
