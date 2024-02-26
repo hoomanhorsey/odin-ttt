@@ -82,13 +82,12 @@ const gameControl = (function() {
     // console.log("Currently testing conditions - checkwin called")
 
         board = Gameboard.getBoard();
-        // const testboard = [['O', 'X', 'X'], ['X', 'O', 0], [0, 'X', 0]];
 
         // Checking rows
+        console.log('checking rows')
         for (let i = 0; i < 3; i++) {
             let testX = 0;
             let testO = 0;
-            //console.log('TESTING ROW '+ i + ', testX: ' + testX +', testO:' + testO)
             for (let j = 0; j < 3; j++) {
                 switch (board[i][j]) {
                     case 'X':
@@ -105,10 +104,11 @@ const gameControl = (function() {
                     }}}
 
         // Checking columns
+        console.log('checking columbs')
+
         for (let j = 0; j < 3; j++) {
             let testX = 0;
             let testO = 0;
-            //console.log('TESTING COLUMN '+ j + ', testX: ' + testX +', testO:' + testO)
             for (let i = 0; i < 3; i++){
                 switch (board[i][j]) {
                     case 'X':
@@ -125,34 +125,36 @@ const gameControl = (function() {
                     }}}
 
         // Testing diagonals
-        if ((board[0][0] === board[1][1]) && (board[1][1] === board[2][2])) {
+        console.log('checking diags')
+
+        if ((board[0][0] === board[1][1]) && (board[1][1] === board[2][2]) && (board[0][0] !== ' ')) {
             return board[0][0];
-        } else if ((board[0][2] === board[1][1]) && (board[1][1] === board[2][0])) {
-                return board[0][2];
+        }  
+        if ((board[0][2] === board[1][1]) && (board[1][1] === board[2][0]) && (board[0][2] !== ' ')) {
+            return board[0][2];
             }
-        
+  
         // Check for tie
         let tie = 0;  
+        console.log('checking tie')
         for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {git
+            for (let j = 0; j < 3; j++) {
                 if (board[i][j] === ' ') {
                     tie++
                 }}}
         if (tie === 0) {
             return "Tie";
         }
+
     } // end of CheckWin method
 
     // winnerMessage method
     const winnerMessage = (winner) => {
         if (winner === 'X') {
-            alert('xwinner')
               return ('winner is ' + winner) 
           } else if (winner === 'O') {
-            alert('Owinner')
             return ('winner is ' + winner)     
           } else if (winner === 'Tie') {
-            alert('Tiewinner')
             return ('Game is tied!')
           }
     }
@@ -205,6 +207,11 @@ const screenController  = (function () {
 
     let boardDisplay = document.querySelector('.boardDisplay'); 
 
+    const displayWinner = function (winMessage){
+        winnerMessage = document.querySelector('.whoseTurn');
+        winnerMessage.textContent = winMessage;
+    }
+
     const clickHandlerCell = () => {
 
         let cells = document.querySelectorAll('.cell');
@@ -219,8 +226,9 @@ const screenController  = (function () {
                 winner = gameControl.checkWin();
                 winMessage = gameControl.winnerMessage(winner);
                     if (winMessage !== undefined) {
-                    alert(winMessage);
-                    }}, 250);
+                    displayWinner(winMessage);
+
+                    }}, 50);
             } 
         )})
     };
@@ -252,7 +260,6 @@ const screenController  = (function () {
                 cell.textContent = board[b][n];
                 cell.setAttribute('class', 'cell');
                 cell.setAttribute('data-index', [b,n]);
-                cell.dataset.coords = [b,n];
                 row.appendChild(cell);
                 }}      
             clickHandlerCell();
