@@ -134,7 +134,7 @@ const gameControl = (function() {
         // Check for tie
         let tie = 0;  
         for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
+            for (let j = 0; j < 3; j++) {git
                 if (board[i][j] === ' ') {
                     tie++
                 }}}
