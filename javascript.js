@@ -292,7 +292,18 @@ const screenController  = (function () {
             //Consider putting this into a restart function, mindful that you'll need to include all the object names of each method
             alert('restart game')
             gameControl.restartGame();
-            updateScreen();
+            updateScreen('restart game');
+            
+            const playAgain = document.querySelector(".playAgain");
+            playAgain.remove();
+            const winMessage = document.querySelector(".winMessage");
+            winMessage.remove();
+
+            const turnID = document.querySelector(".turnID");
+            turnID.textContent = "Player turn: "+ gameControl.getActivePlayer()
+            
+
+
             clickHandlerCell();
         } )
     }
@@ -362,6 +373,8 @@ const screenController  = (function () {
     const updateScreen = (message) => {  
         
         // clear board
+
+        console.log('calling updateScreen() from ' + message)
         boardDisplay.textContent = ' ';
         let board = gameboard.getBoard();
 
@@ -413,7 +426,6 @@ const screenController  = (function () {
 })(); // end of screenController function
 
 screenController.updateScreen(' from global');
-
 
 
 }) // end of DOM load function
