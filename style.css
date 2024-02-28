@@ -15,6 +15,8 @@
     text-align: center;
     font-size: 2rem;
 
+    height: 150px;
+
 
 }
 .boardDisplay {
@@ -27,14 +29,29 @@
     /* border-radius: 10px; */
     
 
-
 }
 
 .testDisplay {
     font-size: 5rem;
 }
-.cell {
+
+
+.row {
     display: grid;
+    text-align: center;
+    justify-content: center;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin: 0px;
+    padding: 0px;
+    /* border-radius: 10px; */
+
+}
+
+
+.cell {
+    box-sizing: border-box;
+    display: grid;
+
     align-items: center;
     text-align: center;
     justify-content: center;
@@ -43,24 +60,54 @@
     border: 6px;
     border-style: solid;
     color: rgba(0, 0, 255, 0.3);
-    height: 10rem;
-    width: 10rem;
+    height: 15rem;
+    width: 15rem;
     margin: 0px;
     padding: 30px;
     /* border-radius: 10px; */
         /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+}
+
+.cell-00 {
+    border-left: 0px;
+    border-top: 0px;
+}
+
+.cell-01 {
+    border-top: 0px;
 
 }
 
-.row {
-    display: grid;
-    text-align: center;
-    justify-content: center;
-    grid-template-columns: 1fr 1fr 1fr;
+.cell-02 {
+    border-top: 0px;
+    border-right: 0px;
 
-    color: red;
-    margin: 0px;
-    padding: 0px;
-    /* border-radius: 10px; */
 
+}
+
+.cell-10 {
+    border-left: 0px;
+
+}
+
+.cell-11 {
+}
+
+.cell-12 {
+    border-right: 0px;
+}
+
+.cell-20 {
+    border-bottom: 0px;
+    border-left: 0px;
+}
+
+.cell-21 {
+    border-bottom: 0px;
+
+}
+
+.cell-22 {
+    border-right: 0px;
+    border-bottom: 0px;
 }

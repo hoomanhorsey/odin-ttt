@@ -1,4 +1,11 @@
 // TODO
+
+// Query 
+// Markers 
+    // - whether to get rid of Gameboard.setMarker, and Gameboard.getMarker methods 
+    // - Just hard code them instead?
+
+
 // IF there is a winner, 
 // - then update screen to advise winner.
 // - prompt to start new game.
@@ -7,69 +14,88 @@
 // -  to input names?
 // - choose maker?
 
+// maybe create a winner variable in the Game control, then get that to update if there is a winner
+// get screen control to check that variable to turn off the event listener?
+
 
 document.addEventListener("DOMContentLoaded", function() {
 
 // Gameboard object IIFE
-const Gameboard = (function() {
+const gameboard = (function() {
 
-    // drawing game board
-    const board = [];
+    // creating game board as an array
+    let board = []; 
+    
     for (let i = 0; i < 3; i++) {
-        newArray = [];
+        tempArray = [];
         for (let j = 0; j < 3; j++) {
-            newArray.push(' ');
+            tempArray.push(' ');
             }
-        board.push(newArray);
+        board.push(tempArray);      
         }
+        
+    
+    const newBoard = () => {
+        let newBoard = [];
+        for (let i = 0; i < 3; i++) {
+            tempArray = [];
+            for (let j = 0; j < 3; j++) {
+                tempArray.push(' ');
+                }
+            newBoard.push(tempArray);      
+            }
+            board = newBoard;
+            
+    };
 
-    // method to add piece to game board
+    
+    
+    // add piece to game board
     const addPiece = (coord1, coord2, piece) => {
-        //console.log("Adding piece to Board", coord1, coord2, piece);       
-        board[coord1][coord2] = piece;}
+    board[coord1][coord2] = piece;}
 
     // method to get game board
     const getBoard = () => board;
 
-    // method to print game board to console
-    // const printBoard = () => console.table(board);
-
-    return {addPiece, getBoard};
+    return {addPiece, getBoard, newBoard};
     })();
 
 
 // Player factory function
 function player(playername) {
     let name = playername;
-    const symbol = "";
     let marker = "";
-
-    const getName = name; // Is this redundant
+    const getName = name; // TODO Is this redundant?  Is name actually gotten?
     const setMarker = (input) => marker = input;
     const getMarker = () => marker; 
-
         return { getName, setMarker, getMarker}
     }
 
 // gameControl object  
 const gameControl = (function() {        
- 
-      // checkTurn method (checks board to determine if play is possible)
-    const checkBoardTurn = (activePlayerName, coords) => {
 
-        // console.log('coords ' + coords)
-        let board = Gameboard.getBoard();
-        // console.table(board)
+    // restarts game
+
+    const restartGame = () => {
+        gameboard.newBoard();
+    }
+ 
+      // checkTurn board to determine if play is possible)
+    const checkBoardTurn = (activePlayerName, coords) => { // TODO - checkBoard takes in activePlayerName but doesn't actually use it....
+
+        let board = gameboard.getBoard();
         let row = coords[0];
-        let column = coords[2];      
+        let column = coords[2];  
+        
+        console.log(board)
         
         do {
             if (board[row][column] === ' ') {
                 return { row, column }
             }
-            alert('Woops! That position is already taken. Please choose a different space');
+            alert('Awww noes! Position is already taken. Please choose a different space');
             return 'space taken';
-        } while ((board[row][column] === 'X') ||  (board[row][column] === 'O'));
+        } while ((board[row][column] === 'X') || (board[row][column] === 'O'));
     } 
 
     // change Active Player method
@@ -79,9 +105,7 @@ const gameControl = (function() {
         
     // checkWin method
     const checkWin = () => {
-    // console.log("Currently testing conditions - checkwin called")
-
-        board = Gameboard.getBoard();
+        board = gameboard.getBoard();
 
         // Checking rows
         console.log('checking rows')
@@ -145,15 +169,16 @@ const gameControl = (function() {
         if (tie === 0) {
             return "Tie";
         }
+        return 'No Winner Yet'
 
     } // end of CheckWin method
 
     // winnerMessage method
     const winnerMessage = (winner) => {
         if (winner === 'X') {
-              return ('winner is ' + winner) 
+              return ('Winner is ' + gameControl.getActivePlayer()) 
           } else if (winner === 'O') {
-            return ('winner is ' + winner)     
+            return ('Winner is ' +  gameControl.getActivePlayer())     
           } else if (winner === 'Tie') {
             return ('Game is tied!')
           }
@@ -165,18 +190,24 @@ const gameControl = (function() {
         const playerOne = player('Whiskey'); // For the time being, hard code names.
         const playerTwo = player('Luna');
 
-        //alert(playerOne.name + 'from Gamecontrol, at time player names are declared')
         // hardcode player maker
         playerOne.setMarker('X'); 
-        playerTwo.setMarker("O");
+        playerTwo.setMarker('O');
 
         // alternatively, can use "chooseMarker();"
 
         // Initiating variables for winner check, and activePlayer         
-        let winner = '';
+        let winner = 'No Winner Yet';
         let activePlayer = playerOne;
-
         return { playerOne, playerTwo, winner, activePlayer}
+    }
+
+    const getWinner = () => {
+        return winner
+    }
+
+    const setWinner = (newWinner) => {
+        winner = newWinner
     }
 
     const getActivePlayer = function () {
@@ -190,56 +221,151 @@ const gameControl = (function() {
 
         // calls checkTurn to see if turn possible, returns turn co-ords
         let gameturn = checkBoardTurn(activePlayer.name, coords);
-        // console.log('gameturn' + gameturn.row + gameturn.column);
         if (gameturn === 'space taken') {
             return;
         }
-        // calls add piece to update board
-        Gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+        // calls addPiece to update board
+        gameboard.addPiece(gameturn.row, gameturn.column, activePlayer.getMarker())
+
+        //TO DO 
+        // checkwin here?
+        winner = gameControl.checkWin();
+
+        if (winner === 'No Winner Yet') {
+            console.log('No winner yet dude!')
+              // calls activePlayer to change active player
+                // activePlayer = changeActivePlayer(activePlayer); 
+                AP = getActivePlayer();
+                console.log('active playereerreerer' + AP)
+
+                activePlayer = activePlayer.getName === playerOne.getName ? playerTwo : playerOne;
+                console.log('active player, from playBoard Round' + activePlayer.name)
+        } else {
+            gameControl.setWinner(winner);
+            console.log('getwinner from playerBoard Round' + getActivePlayer());
+            console.log(' gameControl.setWinner(winner);' + gameControl.getWinner())
+        }
+
+        console.log('winner? - ' + winner)
     
-        activePlayer = changeActivePlayer(activePlayer); 
-        // console.log('activePlayer', activePlayer)                                    
+      
+        //alert(activePlayer.name)
             };
-    return { getActivePlayer, playBoardRound, checkWin, winnerMessage } 
+
+    return { getActivePlayer, playBoardRound, checkWin, winnerMessage, winner, getWinner, setWinner, restartGame} 
     })();
+
+
 
 const screenController  = (function () {
 
     let boardDisplay = document.querySelector('.boardDisplay'); 
 
     const displayWinner = function (winMessage){
+        let whoseTurn  = document.querySelector('.whoseTurn'); 
+
+        let turnID  = document.querySelector('.turnID'); 
+        turnID.textContent = ' ';
+ 
         winnerMessage = document.querySelector('.whoseTurn');
-        winnerMessage.textContent = winMessage;
+
+        let DOMwinMessage = document.createElement('p')
+        console.log(winMessage)
+
+       
+
+ 
+
+
+        DOMwinMessage.setAttribute('class', 'winMessage')              
+        DOMwinMessage.textContent = winMessage;
+        whoseTurn.appendChild(DOMwinMessage);
+        
+        let playAgain = document.createElement('p')
+        playAgain.setAttribute('class', 'playAgain')  
+        playAgain.textContent = "Click to play again!"
+        whoseTurn.appendChild(playAgain);
+
+        clickToPlayAgain = document.querySelector('.playAgain');
+        clickToPlayAgain.addEventListener('click', () => {
+
+            //Consider putting this into a restart function, mindful that you'll need to include all the object names of each method
+            alert('restart game')
+            gameControl.restartGame();
+            updateScreen();
+            clickHandlerCell();
+        } )
     }
 
-    const clickHandlerCell = () => {
+    const clickHandlerCell = () => {         
 
         let cells = document.querySelectorAll('.cell');
         cells.forEach((e) => {
-            e.addEventListener('click', (e) => {
-            // console.log(e.target)    
-            // console.log(e.target.dataset.index)
+            e.addEventListener('click', handleClick);
+            console.log('added the cell event listener')
+                        
+            function handleClick(e) {
+               
+                gameControl.playBoardRound(e.target.dataset.index);
+                updateScreen(' from clickHandlerCell 2nd time')
+                // setTimeout(function() {
+                     
+                //     // winMessage = gameControl.winnerMessage(winner);
+                //         if (winMessage !== undefined) {
+                //         displayWinner(winMessage);
+                        
+                //         alert('we have winner')
+                //         removeCellEventListener(cells);    
+                                                
+                //         function removeCellEventListener() {
+                //             // let bells = document.querySelectorAll('.cell');
 
-            gameControl.playBoardRound(e.target.dataset.index);
-            updateScreen(' from clickHandlerCell 2nd time')
-            setTimeout(function() {
-                winner = gameControl.checkWin();
-                winMessage = gameControl.winnerMessage(winner);
-                    if (winMessage !== undefined) {
-                    displayWinner(winMessage);
+                //             alert('we have called remove Event Listener')
+                //             cells.forEach( bell => {
+                //                 console.log(bell)
+                //                 bell.removeEventListener('click', handleClick);
+                //             })
+                //         }
+                //     }}, 50);
+                } 
+        
+    })
+    }
 
-                    }}, 50);
-            } 
-        )})
-    };
+    // const clickHandlerCell = () => {
+
+    //     let cells = document.querySelectorAll('.cell');
+    //     cells.forEach((e) => {
+    //         e.addEventListener('click', (e) => {
+    //         // console.log(e.target)    
+    //         // console.log(e.target.dataset.index)
+
+    //         gameControl.playBoardRound(e.target.dataset.index);
+    //         updateScreen(' from clickHandlerCell 2nd time')
+    //         setTimeout(function() {
+    //             winner = gameControl.checkWin();
+    //             winMessage = gameControl.winnerMessage(winner);
+    //                 if (winMessage !== undefined) {
+    //                 displayWinner(winMessage);
+                    
+    //                 function removeCellEventListener () {
+    //                     cells.forEach( cell => {
+    //                         cell.removeEventListener()
+    //                     })
+    //                 }
+    //                 removeCellEventListener();
+    //                 }}, 50);
+    //         } 
+    //     )})
+    // };
 
     const updateScreen = (message) => {  
-     
-        // console.log('updateScreen has been' + message)
-    
+        
         // clear board
         boardDisplay.textContent = ' ';
-        let board = Gameboard.getBoard();
+        let board = gameboard.getBoard();
+
+        console.table(board);
 
         // display player turn
         let whoseTurn  = document.querySelector('.whoseTurn');
@@ -250,6 +376,7 @@ const screenController  = (function () {
         whoseTurn.appendChild(turnID);
     
         // render board
+        console.log('rendering process started')
         for (let b = 0; b < 3; b++) {
             let row = document.createElement('div');
             row.setAttribute('class', 'row')        
@@ -257,20 +384,35 @@ const screenController  = (function () {
     
             for (let n = 0; n < 3; n++) {
                 let cell = document.createElement('p');
-                cell.textContent = board[b][n];
-                cell.setAttribute('class', 'cell');
+                cell.textContent = board[b][n];                       
+                cell.classList.add('cell', 'cell-'+ b + n);
                 cell.setAttribute('data-index', [b,n]);
                 row.appendChild(cell);
                 }}      
-            clickHandlerCell();
-            }   
 
-    return {updateScreen, clickHandlerCell}
-})();
+        // TODO, currently restarts clickHandler, but perhaps it only should if there is no winner. 
+        // i.e. if winner === 'No Winner Yet'
+        // clickHandlerCell()
+
+        console.log('gamecontrol get winner' +gameControl.getWinner())
+        // Maybe this function re: winner test needs to be elsewhere?
+        if (gameControl.getWinner() === 'No Winner Yet') {
+            console.log('process winner?'+ gameControl.getWinner())
+            clickHandlerCell();
+                } else {
+                console.log('winner? Need to update winner display screen' + gameControl.getWinner())    
+                console.log('need to also insert a start again button?')
+                winMessage = gameControl.winnerMessage(gameControl.getWinner())
+                displayWinner(winMessage);
+                }
+             }   
+        console.log('Is there a winner' )//+ winner)
+
+             return {updateScreen, clickHandlerCell}
+
+})(); // end of screenController function
 
 screenController.updateScreen(' from global');
-
-//screenController.clickHandlerCell();
 
 
 
