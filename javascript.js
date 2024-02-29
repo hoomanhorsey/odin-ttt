@@ -24,17 +24,17 @@ document.addEventListener("DOMContentLoaded", function() {
 const gameboard = (function() {
 
     // creating game board as an array
-    let board = []; 
     
-    for (let i = 0; i < 3; i++) {
-        tempArray = [];
-        for (let j = 0; j < 3; j++) {
-            tempArray.push(' ');
-            }
-        board.push(tempArray);      
-        }
-        
+    let board;
     
+    // for (let i = 0; i < 3; i++) {
+    //     tempArray = [];
+    //     for (let j = 0; j < 3; j++) {
+    //         tempArray.push(' ');
+    //         }
+    //     board.push(tempArray);      
+    //     }
+    // new board for when game resets
     const newBoard = () => {
         let newBoard = [];
         for (let i = 0; i < 3; i++) {
@@ -44,12 +44,12 @@ const gameboard = (function() {
                 }
             newBoard.push(tempArray);      
             }
-            board = newBoard;
-            
-    };
+            board = newBoard;  
+            return board;          
+    };   
 
-    
-    
+    board = newBoard();
+
     // add piece to game board
     const addPiece = (coord1, coord2, piece) => {
     board[coord1][coord2] = piece;}
@@ -246,9 +246,7 @@ const gameControl = (function() {
             console.log(' gameControl.setWinner(winner);' + gameControl.getWinner())
         }
 
-        console.log('winner? - ' + winner)
-    
-      
+        console.log('winner? - ' + winner)    
         //alert(activePlayer.name)
             };
 
@@ -270,39 +268,33 @@ const screenController  = (function () {
         winnerMessage = document.querySelector('.whoseTurn');
 
         let DOMwinMessage = document.createElement('p')
-        console.log(winMessage)
-
-       
-
- 
-
+        console.log(winMessage)    
 
         DOMwinMessage.setAttribute('class', 'winMessage')              
         DOMwinMessage.textContent = winMessage;
         whoseTurn.appendChild(DOMwinMessage);
         
-        let playAgain = document.createElement('p')
-        playAgain.setAttribute('class', 'playAgain')  
-        playAgain.textContent = "Click to play again!"
-        whoseTurn.appendChild(playAgain);
+        // let playAgain = document.createElement('p')
+        // playAgain.setAttribute('class', 'playAgain')  
+        // playAgain.textContent = "Click to play again!"
+        // whoseTurn.appendChild(playAgain);
 
-        clickToPlayAgain = document.querySelector('.playAgain');
+        clickToPlayAgain = document.querySelector('.reset');
         clickToPlayAgain.addEventListener('click', () => {
 
             //Consider putting this into a restart function, mindful that you'll need to include all the object names of each method
             alert('restart game')
-            gameControl.restartGame();
+            // gameControl.restartGame();
+            gameboard.newBoard();
             updateScreen('restart game');
             
-            const playAgain = document.querySelector(".playAgain");
-            playAgain.remove();
+            // const playAgain = document.querySelector(".playAgain");
+            // playAgain.remove();
             const winMessage = document.querySelector(".winMessage");
             winMessage.remove();
 
             const turnID = document.querySelector(".turnID");
-            turnID.textContent = "Player turn: "+ gameControl.getActivePlayer()
-            
-
+            turnID.textContent = gameControl.getActivePlayer() + "'s turn."          
 
             clickHandlerCell();
         } )
@@ -384,7 +376,7 @@ const screenController  = (function () {
         let whoseTurn  = document.querySelector('.whoseTurn');
         let turnID = document.createElement('p')
         turnID.setAttribute('class', 'turnID')              
-        turnID.textContent = "Player turn: " + gameControl.getActivePlayer();
+        turnID.textContent = gameControl.getActivePlayer() +  "'s turn.";
         whoseTurn.textContent = ' ';    
         whoseTurn.appendChild(turnID);
     

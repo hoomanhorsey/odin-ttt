@@ -31,10 +31,14 @@
 
 }
 
-.testDisplay {
-    font-size: 5rem;
-}
 
+.reset {
+    font-size: 1.5rem;
+
+    text-align: center;
+
+    padding: 30px;
+}
 
 .row {
     display: grid;
@@ -47,7 +51,9 @@
 
 }
 
-
+.cell:hover {
+       box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    }
 .cell {
     box-sizing: border-box;
     display: grid;
