@@ -23,23 +23,6 @@ document.addEventListener("DOMContentLoaded", function() {
 // Gameboard object IIFE
 const gameboard = (function() {
 
-    // TODO - Prob delete this as I've now consolidated it into a new function
-    // creating game board array variable.
-    // let board = [];
-    // new board for when game resets
-    // const newBoard = () => {
-    //     let newBoard = [];
-    //     for (let i = 0; i < 3; i++) {
-    //         tempArray = [];
-    //         for (let j = 0; j < 3; j++) {
-    //             tempArray.push(' ');
-    //             }
-    //         newBoard.push(tempArray);      
-    //         }
-    //         board = newBoard;  
-    //         return board;          
-    // };   
-
     const newBoard = () => {
         let board = [];
         for (let i = 0; i < 3; i++) {
@@ -49,16 +32,15 @@ const gameboard = (function() {
                 }
             board.push(tempArray);      
             }
-        return board;          
+        return board;
     };   
 
-    // assigning a newly generated board to the board variable
+    // assigning a new blank gameboard to the board variable
     board = newBoard();
 
     // add piece to game board
-    const addPiece = (coord1, coord2, piece) => {
-    board[coord1][coord2] = piece;}
-
+    const addPiece = (coord1, coord2, piece) => board[coord1][coord2] = piece;
+        
     // method to get game board
     const getBoard = () => board;
 
@@ -96,6 +78,11 @@ const gameControl = (function() {
     }
     // initialize hard coded player names
     let {playerOne, playerTwo, winner, activePlayer } =  initialize();
+    // TODO - I don't think there is any reason why the above needs to live in 
+    // it's own function, although I think the way you have destructured the variables
+    // is clever.// Keeping it in it's own function doesn't in this instance keep it
+    // private as you are immediately returning it.
+
 
     // restarts game
     const restartGame = () => {
@@ -185,9 +172,9 @@ const gameControl = (function() {
  // checkWin method
  const checkWin = () => {
     board = gameboard.getBoard();
+    console.log('checkWin called')
 
     // Checking rows
-    console.log('checking rows')
     for (let i = 0; i < 3; i++) {
         let testX = 0;
         let testO = 0;
@@ -207,8 +194,6 @@ const gameControl = (function() {
                 }}}
 
     // Checking columns
-    console.log('checking columbs')
-
     for (let j = 0; j < 3; j++) {
         let testX = 0;
         let testO = 0;
@@ -228,8 +213,6 @@ const gameControl = (function() {
                 }}}
 
     // Checking diagonals
-    console.log('checking diags')
-
     if ((board[0][0] === board[1][1]) && (board[1][1] === board[2][2]) && (board[0][0] !== ' ')) {
         return board[0][0];
     }  
@@ -239,7 +222,6 @@ const gameControl = (function() {
 
     // Check for tie
     let tie = 0;  
-    console.log('checking tie')
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             if (board[i][j] === ' ') {
@@ -271,7 +253,7 @@ const screenController  = (function () {
             function handleClick(e) {
                
                 gameControl.playBoardRound(e.target.dataset.index);
-                updateScreen(' from clickHandlerCell 2nd time')
+                updateScreen('clickHandlerCell 2nd time')
                 // setTimeout(function() {
                      
                 //     // winMessage = gameControl.winnerMessage(winner);
@@ -327,6 +309,7 @@ const screenController  = (function () {
         
         // clear board
 
+        
         console.log('calling updateScreen() from ' + message)
         boardDisplay.textContent = ' ';
         let board = gameboard.getBoard();
@@ -374,55 +357,82 @@ const screenController  = (function () {
              }   
     const displayWinner = function (winMessage){
         let turnID  = document.querySelector('.turnID'); 
-        turnID.textContent = ' ';
+        // turnID.textContent = 'poo ';
+        turnID.textContent = winMessage;
 
-        let gameStatusDisplay  = document.querySelector('gameStatusDisplay'); 
-        winnerMessage = document.querySelector('gameStatusDisplay');
+        // TODO - I think all the below is superflous - Just make turn ID Game status
 
-        let DOMwinMessage = document.createElement('p')
-        console.log(winMessage)    
+        // let gameStatusDisplay  = document.querySelector('gameStatusDisplay'); 
+        // //winnerMessage = document.querySelector('gameStatusDisplay');
 
-        DOMwinMessage.setAttribute('class', 'winMessage')              
-        DOMwinMessage.textContent = winMessage;
-        gameStatusDisplay.appendChild(DOMwinMessage);
+        // let DOMwinMessage = document.createElement('p')
+        // console.log(winMessage)    
+
+        // DOMwinMessage.setAttribute('class', 'winMessage')              
+        // DOMwinMessage.textContent = winMessage;
+        // console.log(winMessage)
+        // gameStatusDisplay.appendChild(DOMwinMessage);
         
-        // let playAgain = document.createElement('p')
-        // playAgain.setAttribute('class', 'playAgain')  
-        // playAgain.textContent = "Click to play again!"
-        // whoseTurn.appendChild(playAgain);
+        // // let playAgain = document.createElement('p')
+        // // playAgain.setAttribute('class', 'playAgain')  
+        // // playAgain.textContent = "Click to play again!"
+        // // whoseTurn.appendChild(playAgain);
 
-        clickToPlayAgain = document.querySelector('.reset');
 
-        clickToPlayAgain.addEventListener('click', () => {
+        // TODO - make reset accessible all the time.  
+        // But only when you've won, do you change the text to play again
 
-            //Consider putting this into a restart function, mindful that you'll need to include all the object names of each method
-            alert('restart game')
-            // gameControl.restartGame();
-            gameboard.newBoard();
-            updateScreen('restart game');
+
+        reset = document.querySelector('.reset');
+        reset.textContent = 'Click to play again'
+
+
+        // TODO - included universal reset. 
+        //Maybe get rid of this and make it a function in the gamecontrol object
+        
+        // reset.addEventListener('click', () => {
+
+        //     //Consider putting this into a restart function, mindful that you'll need to include all the object names of each method
+        //     alert('restart game')
+        //     // gameControl.restartGame();
+        //     gameboard.newBoard();
+        //     updateScreen('restart game');
             
-            // const playAgain = document.querySelector(".playAgain");
-            // playAgain.remove();
-            const winMessage = document.querySelector(".winMessage");
-            winMessage.remove();
+        //     // const playAgain = document.querySelector(".playAgain");
+        //     // playAgain.remove();
+        //     const winMessage = document.querySelector(".winMessage");
+        //     winMessage.remove();
 
-            const turnID = document.querySelector(".turnID");
-            turnID.textContent = gameControl.getActivePlayer() + "'s turn."          
+        //     const turnID = document.querySelector(".turnID");
+        //     turnID.textContent = gameControl.getActivePlayer() + "'s turn."          
 
-            clickHandlerCell();
-        } )
+        //     clickHandlerCell();
+        // } )
     }
 
   
 
         console.log('Is there a winner' )//+ winner)
 
+        updateScreen('inside screenController')
              return {updateScreen, clickHandlerCell}
 
 })(); // end of screenController function
 
-screenController.updateScreen(' from global');
 
+//Global directions. Need to probably include this into one of the objects
+
+//screenController.updateScreen(' from global');
+reset = document.querySelector('.reset');
+reset.addEventListener('click', () => {
+alert('universal reset')
+board = gameboard.newBoard();
+screenController.updateScreen();
+screenController.clickHandlerCell();
+
+
+
+})
 
 }) // end of DOM load function
 
