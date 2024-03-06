@@ -7,7 +7,7 @@ variables
 
 methods
 - newBoard() - generates new empty board
-- addPiece() - adds new pieces to board
+- addPiece() - adds new pieces to board, but also checks whether move is possible
 - getBoard() - returns copy of board
 
 check if returned { yes }
@@ -40,18 +40,17 @@ variables
     
 methods
 - restartGame() - calls newBoard, but that's it at the moment
-- checkTurn() - checks if turn is possible 
-                //TODO, check this function to refactor
-                // takes in 'active Player, and coords'??
 - changeActivePlayer() - changes activePlayer to different player. 
             // TODO But doesn't seem to be returned at the moment
+
 - winnerMessage() - returns winner Message based on 'winner' arg 
             // TODO could probably fold this into checkWin()
 - setWinner() - sets winner from 'newWinner' arg
 - getWinner() - returns winner
+
 - getActivePlayer() - gets name of activePlayer
 
-- playBoardRound() - plays round by:
+- playRound() - plays round by:
     - calls checkBoardTurn()
     - calls addPiece()
     - calls checkWin()
@@ -69,9 +68,6 @@ methods
     - check for tie
     - if no winner, returns 'No Winner Yet'
     
-
-
-
 
 
 
