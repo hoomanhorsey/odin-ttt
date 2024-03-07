@@ -62,6 +62,7 @@
     text-align: center;
     justify-content: center;
 
+    background-color: white;
     font-size: 7rem;
     border: 6px;
     border-style: solid;
@@ -73,6 +74,18 @@
     /* border-radius: 10px; */
         /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
 }
+.cat {
+       background-image: url('images/catsmol.jpg');
+       background-repeat: no-repeat;
+       background-position: center;
+    }
+.dog { background-image: url('images/dogsmol.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+
+    
+}
+
 
 .cell-00 {
     border-left: 0px;

@@ -5,19 +5,6 @@
     // - whether to get rid of Gameboard.setMarker, and Gameboard.getMarker methods 
     // - Just hard code them instead?
 
-
-// IF there is a winner, 
-// - then update screen to advise winner.
-// - prompt to start new game.
-
-// Prompt user: 
-// -  to input names?
-// - choose maker?
-
-// maybe create a winner variable in the Game control, then get that to update if there is a winner
-// get screen control to check that variable to turn off the event listener?
-
-
 document.addEventListener("DOMContentLoaded", function() {
 
 // Gameboard object IIFE
@@ -44,6 +31,8 @@ const gameboard = (function() {
         do {
             if (board[row][column] === ' ') {           
                 board[row][column] = marker;
+
+
                 return true;
             } 
         alert('Sorry that location is taken. Choose another?')
@@ -73,38 +62,37 @@ const gameControl = (function() {
     // Initialising hard coded variables to begin game. 
     const initialize = () => {
         // hard coded names
-        const playerOne = player('Whiskey'); // For the time being, hard code names.
-        const playerTwo = player('Luna');
+        const playerX = player('Whiskey'); // For the time being, hard code names.
+        const playerO = player('Luna');
 
         // hardcode player maker -  // alternatively, can use "chooseMarker();"
-        playerOne.setMarker('X'); 
-        playerTwo.setMarker('O');
+        playerX.setMarker('X'); 
+        playerO.setMarker('O');
 
         // Initiating variables for winner check, and activePlayer         
         let winner = false;
-        let activePlayer = playerOne;
+        let activePlayer = playerX;
         console.log('activeplayer initizlisation' + activePlayer.getName())
 
-        return { playerOne, playerTwo, winner, activePlayer}
+        return { playerX, playerO, winner, activePlayer}
     }
     // initialize hard coded player names
-    let {playerOne, playerTwo, winner, activePlayer } =  initialize();
+    let { playerX, playerO, winner, activePlayer } =  initialize();
     // TODO - I don't think there is any reason why the above needs to live in 
     // it's own function, although I think the way you have destructured the variables
     // is clever.// Keeping it in it's own function doesn't in this instance keep it
     // private as you are immediately returning it.
 
-    const getPlayerOne = () => playerOne;
-    const getPlayerTwo = () => playerTwo;
+    // gets player object
+    const getPlayerX = () => playerX;
+    const getPlayerO = () => playerO;
 
     // restarts game
-    const restartGame = () => {
-        gameboard.newBoard();
-    }
-
+    const restartGame = () => gameboard.newBoard();
+    
     // change Active Player method  // TODO This appears to be redundant.....check to see if it is dealt with elsewhere
     const changeActivePlayer = (activePlayer) => {
-        return activePlayer = activePlayer === playerOne.getName() ? playerTwo : playerOne;
+        return activePlayer = activePlayer === playerX.getName() ? playerO : playerX;
     }
         
     // winnerMessage method
@@ -116,23 +104,16 @@ const gameControl = (function() {
           } else if (winner === 'Tie') {
             return ('Game is tied!')
           }
-    }
-    
-    // method to set winner
-    const setWinner = (newWinner) => {
-        winner = newWinner
-        console.log('Winner set! Winner is ' + winner)
-    }
+        }    
 
-    // Method to get winner
-    const getWinner = () => {
-        return winner
-    }
+    // method to set winner and get winner
+    const setWinner = (newWinner) => winner = newWinner;
+    const getWinner = () => winner;
     
-    const getActivePlayerName = function () {
-           return activePlayer.getName();
-    };
-    
+    // Set active player and Get active player name
+    const setActivePlayer = (newActivePlayer) => activePlayer = newActivePlayer; 
+    const getActivePlayerName = () => activePlayer.getName();
+        
     // method to play a round
     const playRound = (coords) => {   
 
@@ -143,21 +124,14 @@ const gameControl = (function() {
         // checkwin 
         gameControl.checkWin();
 
-        if (!winner) { // No winner
-                // changes active player over
-                activePlayer = activePlayer.getName() === playerOne.getName() ? playerTwo : playerOne;
+        if (!winner) { // No winner,  changes active player over
+            activePlayer = activePlayer.getName() === playerX.getName() ? playerO : playerX;
         } else {
-            // What to do if there is a winner? Call endGame()?
-            endGame();
+            winnerMessage()
         }
-        console.log('end of playRound call.........................')
             };
 
-    const endGame = () => {
-        console.log('Game is ended. Winner is ' + winner)
-        winnerMessage()
-    }
-
+ 
  // checkWin method
  const checkWin = () => {
     board = gameboard.getBoard();
@@ -221,7 +195,7 @@ const gameControl = (function() {
 
 } // end of CheckWin method
 
-    return { getActivePlayerName, changeActivePlayer, playRound, checkWin, winnerMessage, getWinner, setWinner, restartGame, initialize, getPlayerOne, getPlayerTwo} 
+    return { getActivePlayerName, setActivePlayer, changeActivePlayer, playRound, checkWin, winnerMessage, getWinner, setWinner, restartGame, initialize, getPlayerX, getPlayerO} 
     })();
 
 
@@ -266,29 +240,27 @@ const screenController  = (function () {
             boardDisplay.appendChild(row);    
     
             for (let n = 0; n < 3; n++) {
-                let cell = document.createElement('p');
-                cell.textContent = board[b][n];                       
-                cell.classList.add('cell', 'cell-'+ b + n);
-                cell.setAttribute('data-index', [b,n]);
+                let cell = document.createElement('button');
+                // cell.textContent = board[b][n];                       
+                cell.classList.add('cell', 'cell-'+ b + n, 'src=""');
+
+                if (board[b][n] === 'X') {
+                    cell.classList.add('cat');
+                } else if (board[b][n] === 'O') {
+                    cell.classList.add('dog');
+
+                }
+
+                cell.setAttribute('data-index', [b,n]);             
                 row.appendChild(cell);
-                }}      
-        
-        
-        
-        console.log('getWinner from if test' +gameControl.getWinner())
+                }}        
+      
+        // check for winner
         if (gameControl.getWinner() === false) { 
             clickHandlerCell();
-        }
-
-        // win check
-        if (gameControl.getWinner() !== false) {
+            return;
+        } else {
             displayWinner(gameControl.winnerMessage(gameControl.getWinner()));
-            
-            // let cells = document.querySelectorAll('.cell');
-            // cells.forEach((e) => { 
-            //     e.removeEventListener('click', window.handleClick);
-            //     }
-            //     )
             }
             };  
               
@@ -300,51 +272,24 @@ const screenController  = (function () {
     const reset = () => {
         resetDiv = document.querySelector('.reset');
         resetDiv.addEventListener('click', () => {
-            console.log('reset, from inside screenController')
-            board = gameboard.newBoard(); 
-            // do i need to udpate everything else? reinitialize    
-            console.log('newboard')
-
-            // let test = gameControl.getWinner();
-            // console.log('winner  ' + test)
-            // if (test === 'O') {
-            //     gameControl.changeActivePlayer('Whiskey')
-            // } else if (test === 'X') {
-            // gameControl.changeActivePlayer('Luna')}
             
-
+            console.log('Status -- reset, from inside screenController')
+            
+            board = gameboard.newBoard(); 
+            
             gameControl.setWinner(false) // reset winner as false
             updateScreen('reset');
-            console.log(gameControl.getActivePlayerName())
+            alert(gameControl.getActivePlayerName())
 
-
-            activePlayer = gameControl.getActivePlayerName === gameControl.getPlayerOne().getName() ? gameControl.getPlayerTwo() : gameControl.getPlayerOne();
-            // activePlayer = activePlayer === playerOne.getName() ? playerTwo : playerOne; 
-            gameControl.changeActivePlayer(gameControl.getActivePlayerName())
-
+            if (gameControl.getActivePlayerName() === 'Whiskey') {
+                gameControl.setActivePlayer(gameControl.getPlayerO())
+            } else {
+                gameControl.setActivePlayer(gameControl.getPlayerX())
+            }
             displayTurn();
-
-
     })}
 
-// if (!gameControl.getWinner()) {
-//         // alert('Is there a winner? ' + gameControl.getWinner());
-//         updateScreen('global');
-//         clickHandlerCell();
-//     }  
-
-// do {
-// if (!gameControl.getWinner()) {
-//     alert('Is there a winner? ' + gameControl.getWinner());
-//     clickHandlerCell();
-// }  
-// } while (gameControl.getWinner() === false);
-
-
-
-updateScreen('inside screenController')
-   
-
+updateScreen('inside screenController')  
 reset();
 
 })(); // end of screenController function
