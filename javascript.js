@@ -279,7 +279,6 @@ const screenController  = (function () {
             
             gameControl.setWinner(false) // reset winner as false
             updateScreen('reset');
-            alert(gameControl.getActivePlayerName())
 
             if (gameControl.getActivePlayerName() === 'Whiskey') {
                 gameControl.setActivePlayer(gameControl.getPlayerO())
